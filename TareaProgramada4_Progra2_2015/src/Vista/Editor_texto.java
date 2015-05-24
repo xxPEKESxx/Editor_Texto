@@ -358,12 +358,15 @@ public class Editor_texto extends JFrame implements ActionListener {
 				int consonantes=0;
 				
 				String texto=jta_textoedicion.getText();
-				
+				String cualespalabras="";
 				String CadenaSinBlancos = "",palabra="";
 			palabra=jta_textoedicion.getText();
 				StringTokenizer st = new StringTokenizer(palabra);
 				
-				
+				for (int i = 0; i < st.countTokens(); i++) {
+					
+					
+				}
 				
 				for (int i = 0; i <numero; i++) {
 					
