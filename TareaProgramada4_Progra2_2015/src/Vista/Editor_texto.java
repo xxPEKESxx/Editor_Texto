@@ -98,7 +98,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 	private Font areaFuente;
 	private boolean cierto=false;
 	private JButton jbtn_limpia;
-	
+	String cualespalabras="";
 	
 	
 	
@@ -288,6 +288,10 @@ public class Editor_texto extends JFrame implements ActionListener {
 							areaFuente= new Font(jcbx_tipofuente.getSelectedItem().toString(), Font.PLAIN, size);
 							jta_textoedicion.setFont(areaFuente);
 							break;
+							
+							default:
+								
+								break;
 					}
 				}
 			}
@@ -358,16 +362,11 @@ public class Editor_texto extends JFrame implements ActionListener {
 				int consonantes=0;
 				
 				String texto=jta_textoedicion.getText();
-				String cualespalabras="";
-				String CadenaSinBlancos = "",palabra="";
-			palabra=jta_textoedicion.getText();
-				StringTokenizer st = new StringTokenizer(palabra);
 				
-				for (int i = 0; i < st.countTokens(); i++) {
-					
-					
-				}
-				
+				String CadenaSinBlancos = "";
+			
+			StringTokenizer sts = new StringTokenizer(texto);
+		
 				for (int i = 0; i <numero; i++) {
 					
 					 if (texto.charAt(i) != ' '){
@@ -389,7 +388,8 @@ public class Editor_texto extends JFrame implements ActionListener {
 			consonantes=total-vocales;	
 				jl_consonantes.setText(String.valueOf(consonantes));
 				jl_letras.setText(String.valueOf(total));
-				jl_palabras.setText(String.valueOf(st.countTokens()));
+				jl_palabras.setText(String.valueOf(sts.countTokens()));
+				
 			}
 		});
 		jta_textoedicion.setFont(new Font("Nasalization", Font.PLAIN, 13));
@@ -406,20 +406,24 @@ public class Editor_texto extends JFrame implements ActionListener {
 		
 		jl_palabras = new JLabel("");
 		jl_palabras.setForeground(new Color(0, 128, 0));
-		jl_palabras.setBounds(75, 0, 46, 14);
+		jl_palabras.setBounds(66, 0, 31, 14);
 		panel_2.add(jl_palabras);
 		
+		jl_numeros = new JLabel("");
+		jl_numeros.setBounds(301, 0, 31, 14);
+		panel_2.add(jl_numeros);
+		
 		lblLetras = new JLabel("Letras:");
-		lblLetras.setBounds(145, 0, 46, 14);
+		lblLetras.setBounds(121, 0, 46, 14);
 		panel_2.add(lblLetras);
 		
 		jl_letras = new JLabel("");
-		jl_letras.setForeground(new Color(0, 128, 0));
-		jl_letras.setBounds(196, 0, 31, 14);
+		jl_letras.setBounds(166, 0, 31, 14);
 		panel_2.add(jl_letras);
+		jl_letras.setForeground(new Color(0, 128, 0));
 		
 		lblNumeros = new JLabel("Numeros:");
-		lblNumeros.setBounds(237, 0, 46, 14);
+		lblNumeros.setBounds(237, 0, 95, 14);
 		panel_2.add(lblNumeros);
 		
 		lblConsonantes = new JLabel("Consonantes: ");
@@ -446,11 +450,42 @@ public class Editor_texto extends JFrame implements ActionListener {
 		
 		jcbx_filtro = new JComboBox();
 		jcbx_filtro.setBounds(10, 0, 159, 20);
-		jcbx_filtro.removeAllItems();
+		jcbx_filtro.addItem("Filtros");
 		jcbx_filtro.addItem("Palabras");
 		jcbx_filtro.addItem("Numeros");
 		jcbx_filtro.addItem("Letras");
 		jcbx_filtro.addItem("Consonantes");
+		jcbx_filtro.addItemListener(new ItemListener () {public void itemStateChanged(ItemEvent e) {
+
+						int elegido;
+						elegido=jcbx_tipofuente.getSelectedIndex();
+						
+									if (elegido==1) {
+										System.out.println("entra a if");
+										String palabra="",cual="";
+										palabra=jta_textoedicion.getText();
+										StringTokenizer strt= new StringTokenizer(palabra);
+										
+										
+										while (strt.hasMoreElements()) {
+											
+											cual+= strt.nextToken()+"\n";
+										}
+										/*for (int i = 0; i < strt.countTokens(); i++) {
+											System.out.println("entra for");
+											cual+= strt.+"\n";
+											
+										}*/
+										areaFuente= new Font(jcbx_tipofuente.getSelectedItem().toString(), Font.ITALIC, Integer.parseInt(jcbx_sizetexto.getSelectedItem().toString()));
+										jta_muestrafiltro.setFont(areaFuente);
+										jta_muestrafiltro.setText(cual);
+									
+									}
+										
+									}
+					
+				}
+			);
 		panel_3.add(jcbx_filtro);
 		
 		jtf_busca = new JTextField();
@@ -476,10 +511,6 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jbtn_limpia.setActionCommand("jbtn_limpia");
 		jbtn_limpia.setBounds(0, 82, 24, 24);
 		panel.add(jbtn_limpia);
-		
-		jl_numeros = new JLabel("numeros");
-		jl_numeros.setBounds(290, 630, 46, 14);
-		panel.add(jl_numeros);
 		jbtn_Abrir.addActionListener(this);
 		jbtn_guarda.addActionListener(this);
 		jbtn_salir2.addActionListener(this);
