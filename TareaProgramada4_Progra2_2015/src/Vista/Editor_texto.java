@@ -50,6 +50,7 @@ import java.util.StringTokenizer;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -104,6 +105,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 	
 	
 	public Editor_texto() {
+		setLocationRelativeTo(null);
 		setSize(646,691);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
@@ -189,6 +191,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		mnAyuda.add(jmi_acercade);
 		
 		jmi_actualiza = new JMenuItem("Actualizar sofware");
+		jmi_actualiza.addActionListener(this);
 		mnAyuda.add(jmi_actualiza);
 		
 		jmi_busca = new JMenuItem("Buscar");
@@ -356,7 +359,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jta_textoedicion.addKeyListener(new KeyAdapter() {
 			
 			public void keyTyped(KeyEvent arg0) {
-				int vocales=0,palabras=0;
+				int vocales=0,palabras=0,num=0;
 				int numero=0,total=0;
 				numero=(jta_textoedicion.getText().length());
 				int consonantes=0;
@@ -364,7 +367,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 				String texto=jta_textoedicion.getText();
 				
 				String CadenaSinBlancos = "";
-			
+		
 			StringTokenizer sts = new StringTokenizer(texto);
 		
 				for (int i = 0; i <numero; i++) {
@@ -383,12 +386,23 @@ public class Editor_texto extends JFrame implements ActionListener {
 						vocales++;
 						
 					}
+					if ((texto.charAt(j)== '0') ||(texto.charAt(j)== '1') 
+							||(texto.charAt(j)== '2') ||(texto.charAt(j)== '3') 
+							||(texto.charAt(j)== '4') ||(texto.charAt(j)== '5') ||(texto.charAt(j)== '6')
+							||(texto.charAt(j)== '7') ||(texto.charAt(j)== '8') ||(texto.charAt(j)== '9')
+							) {
+						num++;
+						
+					}
 				}
 				total=(CadenaSinBlancos.length()+1);
 			consonantes=total-vocales;	
-				jl_consonantes.setText(String.valueOf(consonantes));
-				jl_letras.setText(String.valueOf(total));
+				jl_consonantes.setText(String.valueOf(consonantes-num));
+				jl_letras.setText(String.valueOf(total-num));
 				jl_palabras.setText(String.valueOf(sts.countTokens()));
+				jl_numeros.setText(String.valueOf(num));
+				jl_caracteres.setText(String.valueOf(total));
+				
 				
 			}
 		});
@@ -410,6 +424,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		panel_2.add(jl_palabras);
 		
 		jl_numeros = new JLabel("");
+		jl_numeros.setForeground(new Color(0, 128, 0));
 		jl_numeros.setBounds(301, 0, 31, 14);
 		panel_2.add(jl_numeros);
 		
@@ -436,10 +451,11 @@ public class Editor_texto extends JFrame implements ActionListener {
 		panel_2.add(jl_consonantes);
 		
 		lblCaracteres = new JLabel("Caracteres: ");
-		lblCaracteres.setBounds(485, 0, 69, 14);
+		lblCaracteres.setBounds(485, 0, 110, 14);
 		panel_2.add(lblCaracteres);
 		
-		jl_caracteres = new JLabel("New label");
+		jl_caracteres = new JLabel("");
+		jl_caracteres.setForeground(new Color(0, 128, 0));
 		jl_caracteres.setBounds(564, 0, 46, 14);
 		panel_2.add(jl_caracteres);
 		
@@ -480,15 +496,58 @@ public class Editor_texto extends JFrame implements ActionListener {
 									
 									}
 									if (elegido==2) {
-										jta_muestrafiltro.setText("");
+										
+										String texto="",guarda="";
+										texto=jta_textoedicion.getText();
+										
+										for (int j = 0; j <texto.length(); j++) {
+											
+											if ((texto.charAt(j)== '0') ||(texto.charAt(j)== '1') 
+							||(texto.charAt(j)== '2') ||(texto.charAt(j)== '3') 
+							||(texto.charAt(j)== '4') ||(texto.charAt(j)== '5') ||(texto.charAt(j)== '6')
+							||(texto.charAt(j)== '7') ||(texto.charAt(j)== '8') ||(texto.charAt(j)== '9')
+							) {
+											guarda+=String.valueOf(texto.charAt(j))+"\n"	;
+											}
+										}
+										jta_muestrafiltro.setText(guarda);
 										
 									}
 									if (elegido==3) {
-										jta_muestrafiltro.setText("");
+										
+										String letras=jta_textoedicion.getText();
+										String guarda="";
+										for (int j = 0; j < letras.length(); j++) {
+											
+											if (!((letras.charAt(j)== '0') ||(letras.charAt(j)== '1') 
+													||(letras.charAt(j)== '2') ||(letras.charAt(j)== '3') 
+													||(letras.charAt(j)== '4') ||(letras.charAt(j)== '5') ||(letras.charAt(j)== '6')
+													||(letras.charAt(j)== '7') ||(letras.charAt(j)== '8') ||(letras.charAt(j)== '9')
+													)) {
+												guarda+=String.valueOf(letras.charAt(j))+"\n";	
+																	
+																	}
+										}
+										jta_muestrafiltro.setText(guarda);
 										
 									}
 									if (elegido==4) {
-										jta_muestrafiltro.setText("");
+										
+										String texto= jta_textoedicion.getText();
+										String muestra="";
+										for (int j = 0; j < texto.length(); j++) {
+											if (!((texto.charAt(j)== 'a') ||(texto.charAt(j)== 'e') 
+							||(texto.charAt(j)== 'i') ||(texto.charAt(j)== 'o') 
+							||(texto.charAt(j)== 'u')  ||((texto.charAt(j)== '0') ||(texto.charAt(j)== '1') 
+									||(texto.charAt(j)== '2') ||(texto.charAt(j)== '3') 
+									||(texto.charAt(j)== '4') ||(texto.charAt(j)== '5') ||(texto.charAt(j)== '6')
+									||(texto.charAt(j)== '7') ||(texto.charAt(j)== '8') ||(texto.charAt(j)== '9')
+									)) ) {
+												muestra+=String.valueOf(texto.charAt(j))+"\n";
+											}
+											
+										}
+										jta_muestrafiltro.setText(muestra);
 										
 									}
 									
@@ -529,8 +588,8 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jbtn_italic.addActionListener(this);
 		jbtn_bolditalic.addActionListener(this);
 		jbtn_limpia.addActionListener(this);
-		
-		
+		jbtn_busca.addActionListener(this);
+				
 	}
 	   private void imprimirDatos(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBImprimirActionPerformed
 	         PaginationExample pagination = new PaginationExample();
@@ -718,6 +777,36 @@ public class Editor_texto extends JFrame implements ActionListener {
 			if (accion.getSource()== jbtn_limpia) {
 				areaFuente= new Font("Arial",Font.PLAIN, 18);
 				jta_textoedicion.setFont(areaFuente);
+			}
+			if (accion.getSource()== jmi_salir) {
+				
+				guardar();
+				System.exit(EXIT_ON_CLOSE);
+			}
+			if (accion.getSource()== jmi_actualiza) {
+				carga c;
+				try {
+					c = new carga();
+					c.setVisible(true);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			//mae esto hay que arreglarlo
+			if (accion.getSource() == jbtn_busca) {
+				String texto=jta_textoedicion.getText();
+				String busqueda="ESTE CARACTER SE ENCUENTRA EN LAS POCICIONES: "+"\n";
+				for (int i = 0; i < texto.length(); i++) {
+					
+					if (texto.contains(jtf_busca.getText())) {
+						busqueda+=texto.charAt(i)+"\n";
+					}
+				}
+				
+				jta_muestrafiltro.setText(busqueda);
 			}
 			
 			
