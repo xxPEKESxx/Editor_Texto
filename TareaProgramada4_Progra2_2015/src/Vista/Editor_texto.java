@@ -458,9 +458,10 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jcbx_filtro.addItemListener(new ItemListener () {public void itemStateChanged(ItemEvent e) {
 
 						int elegido;
-						elegido=jcbx_tipofuente.getSelectedIndex();
+						elegido=jcbx_filtro.getSelectedIndex();
 						
 									if (elegido==1) {
+										System.out.println(elegido);
 										System.out.println("entra a if");
 										String palabra="",cual="";
 										palabra=jta_textoedicion.getText();
@@ -471,16 +472,26 @@ public class Editor_texto extends JFrame implements ActionListener {
 											
 											cual+= strt.nextToken()+"\n";
 										}
-										/*for (int i = 0; i < strt.countTokens(); i++) {
-											System.out.println("entra for");
-											cual+= strt.+"\n";
-											
-										}*/
+										
+										
+										jta_muestrafiltro.setText(cual);
 										areaFuente= new Font(jcbx_tipofuente.getSelectedItem().toString(), Font.ITALIC, Integer.parseInt(jcbx_sizetexto.getSelectedItem().toString()));
 										jta_muestrafiltro.setFont(areaFuente);
-										jta_muestrafiltro.setText(cual);
 									
 									}
+									if (elegido==2) {
+										jta_muestrafiltro.setText("");
+										
+									}
+									if (elegido==3) {
+										jta_muestrafiltro.setText("");
+										
+									}
+									if (elegido==4) {
+										jta_muestrafiltro.setText("");
+										
+									}
+									
 										
 									}
 					
