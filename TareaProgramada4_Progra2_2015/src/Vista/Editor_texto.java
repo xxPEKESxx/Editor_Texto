@@ -51,8 +51,11 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+import sun.text.normalizer.Replaceable;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
 
 
 public class Editor_texto extends JFrame implements ActionListener {
@@ -89,7 +92,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 	private JLabel jl_consonantes;
 	private JLabel lblCaracteres;
 	private JLabel jl_caracteres;
-	private JMenuItem mntmRemplazarCaracterpalabrasimboloEct;
+	private JMenuItem jmi_cambiacaracter;
 	private JPanel panel_3;
 	private JComboBox<String> jcbx_filtro;
 	private JTextField jtf_busca;
@@ -105,6 +108,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 	
 	
 	public Editor_texto() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Editor_texto.class.getResource("/Recursos/txt.png")));
 		setLocationRelativeTo(null);
 		setSize(646,691);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -178,8 +182,15 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jmi_terminacon = new JMenuItem("Palabras que terminan con ....");
 		mnVer.add(jmi_terminacon);
 		
-		mntmRemplazarCaracterpalabrasimboloEct = new JMenuItem("Remplazar caracter(palabra,simbolo, ect)");
-		mnVer.add(mntmRemplazarCaracterpalabrasimboloEct);
+		
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+		jmi_cambiacaracter = new JMenuItem("Remplazar caracter(palabra,simbolo, ect)");
+		jmi_cambiacaracter.addActionListener(this);
+		mnVer.add(jmi_cambiacaracter);
+		
+		
 		
 		JMenuItem menuItem = new JMenuItem("");
 		mnVer.add(menuItem);
@@ -188,6 +199,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jmb_opciones.add(mnAyuda);
 		
 		jmi_acercade = new JMenuItem("Acerca de...");
+		jmi_acercade .addActionListener(this);
 		mnAyuda.add(jmi_acercade);
 		
 		jmi_actualiza = new JMenuItem("Actualizar sofware");
@@ -363,7 +375,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 				int numero=0,total=0;
 				numero=(jta_textoedicion.getText().length());
 				int consonantes=0;
-				
+				 
 				String texto=jta_textoedicion.getText();
 				
 				String CadenaSinBlancos = "";
@@ -564,6 +576,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jtf_busca.setColumns(10);
 		
 		jbtn_busca = new JButton("");
+		jbtn_busca.setToolTipText("Para buscar caracter o cadenas de ellos ");
 		jbtn_busca.setBounds(144, 26, 25, 25);
 		panel_3.add(jbtn_busca);
 		jbtn_busca.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/search.png")));
@@ -578,19 +591,30 @@ public class Editor_texto extends JFrame implements ActionListener {
 		scrollPane_1.setViewportView(jta_muestrafiltro);
 		
 		jbtn_limpia = new JButton("");
+		jbtn_limpia.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/undo.png")));
 		jbtn_limpia.setActionCommand("jbtn_limpia");
 		jbtn_limpia.setBounds(0, 82, 24, 24);
 		panel.add(jbtn_limpia);
 		jbtn_Abrir.addActionListener(this);
 		jbtn_guarda.addActionListener(this);
 		jbtn_salir2.addActionListener(this);
+	
 		jbtn_negrita.addActionListener(this);
 		jbtn_italic.addActionListener(this);
 		jbtn_bolditalic.addActionListener(this);
 		jbtn_limpia.addActionListener(this);
 		jbtn_busca.addActionListener(this);
+		jmi_comienzacon.addActionListener(this);
+		
 				
 	}
+	
+	
+	
+	
+	
+	
+	
 	   private void imprimirDatos(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBImprimirActionPerformed
 	         PaginationExample pagination = new PaginationExample();
 	         pagination.imprimirnomina();
@@ -651,7 +675,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		    //Se obtiene el total de lineas de texto
 		    int totallineas = lineasdetexto.countTokens();
 
-		 int[] paginas;  // Arreglo de número de paginas que se necesitaran para imprimir todo el texto 
+		 int[] paginas;  // Arreglo de numero de paginas que se necesitaran para imprimir todo el texto 
 
 		 String[] textoLineas; //Lineas de texto que se imprimiran en cada hoja
 
@@ -698,7 +722,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		         y += altodelinea;
 		         g.drawString(textoLineas[line], 0, y);
 		     }
-		     /* Retorna PAGE_EXISTS para indicar al invocador que esta página es parte del documento impreso
+		     /* Retorna PAGE_EXISTS para indicar al invocador que esta pagina es parte del documento impreso
 		      */
 		     return PAGE_EXISTS;
 		 }
@@ -728,13 +752,72 @@ public class Editor_texto extends JFrame implements ActionListener {
 		          try {
 		               job.print();
 		          } catch (PrinterException ex) {
-		           /* The job did not successfully complete */
+		           /* No se completa de manera exitosa */
 		          }
 		      }
 		 }
 		}
 	
+	  public void cambiacaracter(){
+
+			
+			//	cambio CB=new cambio();//Esta es la forma en como quiero hacerlo 
+			        // CB.setVisible(true);
+				
+	//Pero de momento me veo forzado a esto 
+			         
+			         String texto=jta_textoedicion.getText();
+			         String ingresabusca=JOptionPane.showInputDialog(null,"Ingrese el caracter o cadena a buscar: ","BUSCAR",JOptionPane.QUESTION_MESSAGE);
+			         String ingresacambia=JOptionPane.showInputDialog(null,"Ingrese el caracter o cadena para cambiar: ","CAMBIAR",JOptionPane.QUESTION_MESSAGE);
+				      
+			       for (int i = 0; i < texto.length(); i++) {
+			    	   
+			    	   if (texto.contains(ingresacambia)) {
+				        			        	 
+				        	 texto.replace(String.valueOf(texto.charAt(i)),ingresacambia );
+				        	texto.replace(ingresabusca, ingresacambia);
+				        	 
+				         }
+					
+				         else{
+				        	 JOptionPane.showMessageDialog(null,"El caracter o cadena NO esta en este texto","Mala suerte",JOptionPane.ERROR_MESSAGE); 
+				        	
+				        	 
+				         }
+				}
+			     
+				
+				
+			       jta_textoedicion.setText(texto);
+			       jta_muestrafiltro.setText(texto);
+			
+			
+			
+	  }
 	  
+	  public void primer(){
+		  String texto=jta_textoedicion.getText();
+		  StringTokenizer strt= new StringTokenizer(texto);
+			String es="";
+			String cual="";
+			String muestra="";
+			cual= JOptionPane.showInputDialog("ingrese el caracyer a buscar en palabra");
+			
+			
+			while (strt.hasMoreElements()) {
+				System.out.println("while");
+				es=strt.nextToken().toString();
+				
+				
+				if (cual.equalsIgnoreCase(String.valueOf(es.charAt(0)))) {
+					System.out.println("if");
+					muestra+=es+"\n";
+				}
+				
+			}
+			jta_muestrafiltro.setText(muestra);
+			
+	  }
 	  
 		public void actionPerformed(ActionEvent accion) {
 			if (accion.getSource()==jbtn_Abrir) {
@@ -744,8 +827,8 @@ public class Editor_texto extends JFrame implements ActionListener {
 				guardar();
 			}
 			if (accion.getSource()==jbtn_salir2) {
-				guardar();
-				System.exit(EXIT_ON_CLOSE);
+				
+				System.exit(0);
 			}
 			
 			if (accion.getSource()== jmi_nuevo) {
@@ -780,8 +863,8 @@ public class Editor_texto extends JFrame implements ActionListener {
 			}
 			if (accion.getSource()== jmi_salir) {
 				
-				guardar();
-				System.exit(EXIT_ON_CLOSE);
+				//guardar();
+				System.exit(0);
 			}
 			if (accion.getSource()== jmi_actualiza) {
 				carga c;
@@ -789,27 +872,61 @@ public class Editor_texto extends JFrame implements ActionListener {
 					c = new carga();
 					c.setVisible(true);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					// 
 					e.printStackTrace();
 				}
 				
 				
 			}
-			//mae esto hay que arreglarlo
+			
+			
+			if (accion.getSource()== jmi_abrir) {}//fin de esta accion 
+			
+			
+			//---------------------------------------------------------------------------------
 			if (accion.getSource() == jbtn_busca) {
+				 
 				String texto=jta_textoedicion.getText();
-				String busqueda="ESTE CARACTER SE ENCUENTRA EN LAS POCICIONES: "+"\n";
-				for (int i = 0; i < texto.length(); i++) {
-					
-					if (texto.contains(jtf_busca.getText())) {
-						busqueda+=texto.charAt(i)+"\n";
-					}
-				}
+				String busqueda="ESTA CADENA O CARACTER ESTA \n DISPONIBLE EN TEXTO: "+"\n";
 				
-				jta_muestrafiltro.setText(busqueda);
-			}
+					
+					if (texto.contains(jtf_busca.getText())==true) { 
+						
+                      jta_muestrafiltro.setText(null);//esto es para limpiar el JtextArea
+						
+						jta_muestrafiltro.setText(busqueda.concat(jtf_busca.getText()));
+						
+						JOptionPane.showMessageDialog(null,"El caracter o cadena se encuentra disponible","!!Muy bien!!",JOptionPane.INFORMATION_MESSAGE);
+						
+					}
+			
+					else{ 
+						
+						jta_muestrafiltro.setText(null);
+						
+						JOptionPane.showMessageDialog(null,"El caracter o cadena NO esta en este texto","Mala suerte",JOptionPane.ERROR_MESSAGE);}
+					
+		
+			}//
 			
 			
+		  if(accion.getSource()==jmi_acercade){	
 			
+			acerca ac= new acerca();
+			   
+			    ac.setVisible(true);
+			   
+		  }
+		  if (accion.getSource() == jmi_cambiacaracter) {
+			cambiacaracter();
 		}
-}
+		  if (accion.getSource()==jmi_comienzacon) {
+			  primer();
+		}
+			
+			
+		}//Fin de actionPerformed
+	
+		
+		
+}//FIN DE LA CLASE 
