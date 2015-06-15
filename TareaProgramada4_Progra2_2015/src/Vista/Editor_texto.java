@@ -70,15 +70,10 @@ import javax.swing.SwingConstants;
 //#########Para manipulacion del navegador web desde java######################
 
 
-
-
-
-
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler; 
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.browserprefui.BrowserPrefAction;
+
 
 import java.awt.event.InputEvent;
 
@@ -1115,6 +1110,8 @@ public class Editor_texto extends JFrame implements ActionListener{
 			acerca ac= new acerca();
 			   
 			    ac.setVisible(true);
+			    setVisible(false);
+			    
 			   
 		  }
 		  if (accion.getSource() == jmi_cambiacaracter) {
