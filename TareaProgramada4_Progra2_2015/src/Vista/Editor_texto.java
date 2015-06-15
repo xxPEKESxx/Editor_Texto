@@ -9,11 +9,14 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 
+import javax.naming.ldap.Rdn;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -28,12 +31,13 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.KeyStroke;
 
-
+import java.awt.Button;
 
 import javax.swing.JTextField;
-
+import javax.swing.JEditorPane;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -50,21 +54,56 @@ import java.util.StringTokenizer;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.text.rtf.RTFEditorKit;
 
-
+import sun.text.normalizer.*;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
 
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 
-public class Editor_texto extends JFrame implements ActionListener {
+//#########Para manipulacion del navegador web desde java######################
+
+
+
+
+
+
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler; 
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.browserprefui.BrowserPrefAction;
+
+import java.awt.event.InputEvent;
+
+//#########################################################################
+
+
+
+public class Editor_texto extends JFrame implements ActionListener{
+	
+	 
+	
 	private JPanel jp_edicion;
 	private int size=17;
 	private JTextArea jta_textoedicion;
 	private JButton jbtn_Abrir;
 	private JButton jbtn_guarda;
 	private JButton jbtn_busca;
+	
+	  private JButton buscarDiccioButton;//Boton de buscar en diccionario.
+	  
+	  
+	  JRadioButton jrdb_significado;
+	  JRadioButton rdbtnSinonimo;
+	  
+	  
 	private JButton jbtn_negrita;
 	private JButton jbtn_italic;
 	private JButton jbtn_bolditalic;
@@ -73,7 +112,6 @@ public class Editor_texto extends JFrame implements ActionListener {
 	private JMenuItem jmi_terminacon;
 	private JMenuItem jmi_comienzacon;
 	private JCheckBoxMenuItem jchx_paneledicion;
-	private JMenuItem jmi_busca;
 	private JMenuItem jmi_actualiza;
 	private JMenuItem jmi_acercade;
 	private JMenuItem jmi_nuevo;
@@ -103,6 +141,9 @@ public class Editor_texto extends JFrame implements ActionListener {
 	private boolean cierto=false;
 	private JButton jbtn_limpia;
 	String cualespalabras="";
+	private JLabel DiccioLabel;
+	private JTextField jtf_diccionario;
+	private JMenuItem jmi_manual;
 	
 	
 	
@@ -110,38 +151,43 @@ public class Editor_texto extends JFrame implements ActionListener {
 	public Editor_texto() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Editor_texto.class.getResource("/Recursos/txt.png")));
 		setLocationRelativeTo(null);
-		setSize(646,691);
+		setSize(676,691);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		
 		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		JMenuBar jmb_opciones = new JMenuBar();
-		jmb_opciones.setBounds(0, 0, 573, 21);
+		jmb_opciones.setBounds(0, 0, 670, 21);
 		panel.add(jmb_opciones);
 		
 		JMenu mnArchivo = new JMenu("Archivo");
 		jmb_opciones.add(mnArchivo);
 		
 		jmi_nuevo = new JMenuItem("Nuevo");
+		jmi_nuevo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 		jmi_nuevo.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/new.png")));
 		jmi_nuevo.addActionListener(this);
 		mnArchivo.add(jmi_nuevo);
 		
 		jmi_abrir = new JMenuItem("Abrir");
+		jmi_abrir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		jmi_abrir.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/open16x16.png")));
 		jmi_abrir.addActionListener(this);
 		
 		mnArchivo.add(jmi_abrir);
 		
 		jmi_guardar = new JMenuItem("Guardar");
+		jmi_guardar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK));
 		jmi_guardar.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/save16x16.png")));
 		jmi_guardar.addActionListener(this);
 		mnArchivo.add(jmi_guardar);
 		
 		jmi_imprime = new JMenuItem("Imprimir");
+		jmi_imprime.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK));
 		jmi_imprime.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/printer16x16.png")));
 		jmi_imprime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,6 +197,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		mnArchivo.add(jmi_imprime);
 		
 		jmi_salir = new JMenuItem("Salir");
+		jmi_salir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
 		jmi_salir.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/salir.png")));
 		mnArchivo.add(jmi_salir);
 		
@@ -190,6 +237,10 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jmi_cambiacaracter.addActionListener(this);
 		mnVer.add(jmi_cambiacaracter);
 		
+		jmi_manual = new JMenuItem("Manual de usuario");
+		jmi_manual.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+		mnVer.add(jmi_manual);
+		
 		
 		
 		JMenuItem menuItem = new JMenuItem("");
@@ -206,11 +257,8 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jmi_actualiza.addActionListener(this);
 		mnAyuda.add(jmi_actualiza);
 		
-		jmi_busca = new JMenuItem("Buscar");
-		mnAyuda.add(jmi_busca);
-		
 		jp_edicion = new JPanel();
-		jp_edicion.setBounds(0, 21, 573, 50);
+		jp_edicion.setBounds(0, 21, 670, 50);
 		panel.add(jp_edicion);
 		jp_edicion.setLayout(null);
 		
@@ -265,7 +313,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jcbx_sizetexto.addItem("40");
 		jcbx_sizetexto.addItem("50");
 		jcbx_sizetexto.addItem("Personalizar");
-		jcbx_sizetexto.setToolTipText("Tamaï¿½o de fuente");
+		jcbx_sizetexto.setToolTipText("Tamaño de fuente");
 		jcbx_sizetexto.addItemListener(
 			new ItemListener () {
 				public void itemStateChanged(ItemEvent e) {
@@ -299,7 +347,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 							jta_textoedicion.setFont(areaFuente);
 							break;
 						case 6:
-							size=Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaï¿½o de la fuente"));
+							size=Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño de la fuente"));
 							areaFuente= new Font(jcbx_tipofuente.getSelectedItem().toString(), Font.PLAIN, size);
 							jta_textoedicion.setFont(areaFuente);
 							break;
@@ -472,7 +520,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		panel_2.add(jl_caracteres);
 		
 		panel_3 = new JPanel();
-		panel_3.setBounds(461, 70, 169, 549);
+		panel_3.setBounds(461, 70, 169, 299);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 		
@@ -582,7 +630,7 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jbtn_busca.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/search.png")));
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 54, 159, 484);
+		scrollPane_1.setBounds(0, 54, 169, 241);
 		panel_3.add(scrollPane_1);
 		
 		jta_muestrafiltro = new JTextArea();
@@ -595,23 +643,90 @@ public class Editor_texto extends JFrame implements ActionListener {
 		jbtn_limpia.setActionCommand("jbtn_limpia");
 		jbtn_limpia.setBounds(0, 82, 24, 24);
 		panel.add(jbtn_limpia);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panel_4.setBounds(461, 380, 199, 239);
+		panel.add(panel_4);
+		panel_4.setLayout(null);
+		
+		DiccioLabel = new JLabel("Diccionario  ");
+		DiccioLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+		DiccioLabel.setBounds(34, 11, 106, 32);
+		DiccioLabel.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/book.png")));
+		panel_4.add(DiccioLabel);
+		
+		jtf_diccionario = new JTextField();
+		jtf_diccionario.setBounds(29, 80, 137, 20);
+		panel_4.add(jtf_diccionario);
+		jtf_diccionario.setColumns(10);
+		
+		
+		JLabel DiccioLabel2 = new JLabel("Ingrese palabra a buscar: ");
+		DiccioLabel2.setBounds(33, 50, 156, 14);
+		panel_4.add(DiccioLabel2);
+		
+		jrdb_significado = new JRadioButton("Significado",true);
+		jrdb_significado.setBounds(10, 107, 94, 23);
+		panel_4.add(jrdb_significado);
+		
+		rdbtnSinonimo = new JRadioButton("Sin\u00F3nimo",false);
+		rdbtnSinonimo.setBounds(106, 107, 87, 23);
+		panel_4.add(rdbtnSinonimo);
+		
+		
+		//Esta clase es para agrupar los 2 radio button, sirve para crear una relacion logica entre los elementos JRadioButton
+		ButtonGroup grupoRadioB=new ButtonGroup();
+		
+		grupoRadioB.add(jrdb_significado);
+		grupoRadioB.add(rdbtnSinonimo);
+		
+		
+	//************************************************************************	
+		
+		
+		 buscarDiccioButton = new JButton("Buscar");
+		buscarDiccioButton.setToolTipText("Para buscar significado de la palabra dentro del texto.");
+		buscarDiccioButton.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/search.png")));
+		buscarDiccioButton.setBounds(35, 153, 112, 32);
+		panel_4.add(buscarDiccioButton);
+		
+		 
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		jbtn_Abrir.addActionListener(this);
 		jbtn_guarda.addActionListener(this);
 		jbtn_salir2.addActionListener(this);
-	
+		jmi_comienzacon.addActionListener(this);
+		jmi_terminacon.addActionListener(this);
 		jbtn_negrita.addActionListener(this);
 		jbtn_italic.addActionListener(this);
 		jbtn_bolditalic.addActionListener(this);
 		jbtn_limpia.addActionListener(this);
 		jbtn_busca.addActionListener(this);
-		jmi_comienzacon.addActionListener(this);
-		jmi_terminacon.addActionListener(this);
-				
+		buscarDiccioButton.addActionListener(this);
+		jmi_manual.addActionListener(this);
+		jrdb_significado.addActionListener(this);
+		rdbtnSinonimo.addActionListener(this);		
 	}
 	
 	
 	
-	
+	public void manual (){
+		try {
+		     File path = new File ("Recursos/MANUAL DE USUARIO PROYECTO PROGRAMADO 1 PROGRAMACION 2.docx");
+		     Desktop.getDesktop().open(path);
+		}catch (IOException ex) {
+		     ex.printStackTrace();
+		}
+	}
 	
 	
 	
@@ -760,11 +875,6 @@ public class Editor_texto extends JFrame implements ActionListener {
 	
 	  public void cambiacaracter(){
 
-			boolean tiene=false;
-			//	cambio CB=new cambio();//Esta es la forma en como quiero hacerlo 
-			        // CB.setVisible(true);
-				
-	//Pero de momento me veo forzado a esto 
 			         
 			         String texto=jta_textoedicion.getText();
 			         String ingresabusca=JOptionPane.showInputDialog(null,"Ingrese el caracter o cadena a buscar: ","BUSCAR",JOptionPane.QUESTION_MESSAGE);
@@ -776,16 +886,16 @@ public class Editor_texto extends JFrame implements ActionListener {
 				        			        	 
 				        	 texto.replace(String.valueOf(texto.charAt(i)),ingresacambia );
 				        	texto.replace(ingresabusca, ingresacambia);
-				        	tiene=true;
 				        	 
 				         }
 					
-				        
+				         else{
+				        	 JOptionPane.showMessageDialog(null,"El caracter o cadena NO esta en este texto","Mala suerte",JOptionPane.ERROR_MESSAGE); 
+				        	
+				        	 
+				         }
 				}
 			     
-			       if (!tiene) {
-					JOptionPane.showMessageDialog(null, "no existe ese elemento");
-				}
 				
 				
 			       jta_textoedicion.setText(texto);
@@ -795,13 +905,14 @@ public class Editor_texto extends JFrame implements ActionListener {
 			
 	  }
 	  
+	  
 	  public void primer(){
 		  String texto=jta_textoedicion.getText();
 		  StringTokenizer strt= new StringTokenizer(texto);
 			String es="";
 			String cual="";
 			String muestra="";
-			cual= JOptionPane.showInputDialog("ingrese el caracyer a buscar en palabra");
+			cual= JOptionPane.showInputDialog("Ingrese el caracter para buscar las palabras que comiencen con el mismo");
 			
 			
 			while (strt.hasMoreElements()) {
@@ -818,36 +929,87 @@ public class Editor_texto extends JFrame implements ActionListener {
 			jta_muestrafiltro.setText(muestra);
 			
 	  }
-          
-          public void ultimo(){
-          
-		  String texto=jta_textoedicion.getText();
-		  StringTokenizer strt= new StringTokenizer(texto);
-			String es="";
-			String cual="";
-			String muestra="";
-			cual= JOptionPane.showInputDialog("ingrese el caracyer a buscar en palabra");
-                        int ulti=0;
-			
-			
-			while (strt.hasMoreElements()) {
-				System.out.println("while");
-				es=strt.nextToken().toString();
-                        ulti=es.length()-1;
-                               if (cual.equalsIgnoreCase(String.valueOf(es.charAt(ulti)))) {
-					System.out.println("if");
-					muestra+=es+"\n";
-				}
-				
+	  
+	     
+      public void ultimo(){
+      
+	  String texto=jta_textoedicion.getText();
+	  StringTokenizer strt= new StringTokenizer(texto);
+		String es="";
+		String cual="";
+		String muestra="";
+		cual= JOptionPane.showInputDialog("Ingrese el caracter para buscar las palabras que terminen con el mismo");
+                    int ulti=0;
+		
+		
+		while (strt.hasMoreElements()) {
+			System.out.println("while");
+			es=strt.nextToken().toString();
+                    ulti=es.length()-1;
+                           if (cual.equalsIgnoreCase(String.valueOf(es.charAt(ulti)))) {
+				System.out.println("if");
+				muestra+=es+"\n";
 			}
-			jta_muestrafiltro.setText(muestra);
 			
-	  }
+		}
+		jta_muestrafiltro.setText(muestra);
+		
+  }
+	//###################El Metodo del diccionario###########################  
+	  
+      //Esta exception es para cuando hay problemas de inicializacion y Unsupported 
+	 //es para cuando el sistema operativo no esta soportado por la biblioteca externa BrowserLauncher2  
+	 
+	  public void diccionario()throws BrowserLaunchingInitializingException,UnsupportedAudioFileException, UnsupportedOperatingSystemException{
+		  BrowserLauncher navegador = new BrowserLauncher();
+		  
+		  String texto=jta_textoedicion.getText();
+			//String busqueda="ESTA CADENA O CARACTER ESTA \n DISPONIBLE EN TEXTO: "+"\n";
+			
+				
+				if (texto.contains(jtf_diccionario.getText())==true) { 
+					
+           
+					
+					JOptionPane.showMessageDialog(null,"La palabra que busca se encuentra disponible en texto","!!Muy bien!!",JOptionPane.INFORMATION_MESSAGE);
+					
+					if (jrdb_significado.isSelected()==true) {
+						
+						JOptionPane.showMessageDialog(null,"Significado Segun  la R.A.E","RAE",JOptionPane.INFORMATION_MESSAGE);	
+						 
+						navegador.openURLinBrowser("http://lema.rae.es/drae/?val="+jtf_diccionario.getText());
+						jtf_diccionario.setText(null);
+						
+					} else {
+						
+						JOptionPane.showMessageDialog(null,"Segun WordReference.com","WordReference.com Sinónimos",JOptionPane.INFORMATION_MESSAGE);	
+						
+						navegador.openURLinBrowser("http://www.wordreference.com/sinonimos/"+jtf_diccionario.getText());
+						jtf_diccionario.setText(null);
+						
+						
+					}
+						
+					
+					
+				}
+		
+				else{ 
+					
+					jta_muestrafiltro.setText(null);
+					
+					JOptionPane.showMessageDialog(null,"La palabra buscada NO esta en este texto","Mala suerte",JOptionPane.ERROR_MESSAGE);}
+				  
+		  
+		  
+		  
+	  }//Fin de metodo diccionario.
+	    
+	  
+
 	  
 		public void actionPerformed(ActionEvent accion) {
-			if (accion.getSource()==jbtn_Abrir) {
-				abrir();
-			}
+		
 			if (accion.getSource()==jbtn_guarda) {
 				guardar();
 			}
@@ -855,9 +1017,15 @@ public class Editor_texto extends JFrame implements ActionListener {
 				
 				System.exit(0);
 			}
+			if (accion.getSource()==jmi_comienzacon) {
+				primer();
+			}
 			
+			if (accion.getSource()==jmi_terminacon) {
+				ultimo();
+			}
 			if (accion.getSource()== jmi_nuevo) {
-				
+				guardar();
 				jta_textoedicion.setText("");
 			}
 			
@@ -868,6 +1036,10 @@ public class Editor_texto extends JFrame implements ActionListener {
 			if (accion.getSource()== jmi_guardar) {
 				
 			guardar();
+			}
+			if (accion.getSource() == jmi_manual) {
+				
+				manual();
 			}
 			if (accion.getSource()== jbtn_negrita) {
 				areaFuente= new Font(jcbx_tipofuente.getSelectedItem().toString(), Font.BOLD, Integer.parseInt(jcbx_sizetexto.getSelectedItem().toString()));
@@ -905,7 +1077,10 @@ public class Editor_texto extends JFrame implements ActionListener {
 			}
 			
 			
-			if (accion.getSource()== jmi_abrir) {}//fin de esta accion 
+			if (accion.getSource()== jbtn_Abrir) {
+				abrir();
+				
+			}//fin de esta accion 
 			
 			
 			//---------------------------------------------------------------------------------
@@ -945,16 +1120,28 @@ public class Editor_texto extends JFrame implements ActionListener {
 		  if (accion.getSource() == jmi_cambiacaracter) {
 			cambiacaracter();
 		}
-		  if (accion.getSource()==jmi_comienzacon) {
-			  primer();
-		}
-		
-                    if (accion.getSource()==jmi_terminacon) {
-                        ultimo();
-                    }
 			
+	///////////////////////////// BOTON DEL DICCIONARIO///////////////////////////		
+		
+		  if(accion.getSource()==buscarDiccioButton){  
+		  
+		  try {
+			diccionario();
+		} catch (BrowserLaunchingInitializingException
+				| UnsupportedOperatingSystemException e) {
+			
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  
+		  
+		}//fin de if de boton buscar con diccionario
+		  
+		  
+		  
+		  
+		  
 		}//Fin de actionPerformed
-	
-		
-		
-}//FIN DE LA CLASE 
+}//Fin de la clase
