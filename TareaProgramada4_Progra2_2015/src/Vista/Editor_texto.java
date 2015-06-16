@@ -687,15 +687,6 @@ public class Editor_texto extends JFrame implements ActionListener{
 		panel_4.add(buscarDiccioButton);
 		
 		 
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		jbtn_Abrir.addActionListener(this);
 		jbtn_guarda.addActionListener(this);
 		jbtn_salir2.addActionListener(this);
@@ -711,13 +702,15 @@ public class Editor_texto extends JFrame implements ActionListener{
 		jrdb_significado.addActionListener(this);
 		rdbtnSinonimo.addActionListener(this);		
 	}
-	
-	
+
 	
 	public void manual (){
+		
+		String archivo =new String("src/Recursos/MANUAL.pdf");
 		try {
-		     File path = new File ("Recursos/MANUAL DE USUARIO PROYECTO PROGRAMADO 1 PROGRAMACION 2.docx");
-		     Desktop.getDesktop().open(path);
+			Runtime.getRuntime().exec("cmd /c start "+archivo);
+		    
+		     
 		}catch (IOException ex) {
 		     ex.printStackTrace();
 		}
@@ -1073,6 +1066,7 @@ public class Editor_texto extends JFrame implements ActionListener{
 			
 			
 			if (accion.getSource()== jbtn_Abrir) {
+				guardar();
 				abrir();
 				
 			}//fin de esta accion 
