@@ -263,14 +263,17 @@ public class Editor_texto extends JFrame implements ActionListener{
 		jp_edicion.add(jtoolBar);
 		
 		jbtn_Abrir = new JButton("");
+		jbtn_Abrir.setToolTipText("Abre un archivo txt");
 		jtoolBar.add(jbtn_Abrir);
 		jbtn_Abrir.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/open.png")));
 		
 		jbtn_guarda = new JButton("");
+		jbtn_guarda.setToolTipText("Guarda un archivo TXT");
 		jtoolBar.add(jbtn_guarda);
 		jbtn_guarda.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/save.png")));
 		
 		jbtn_salir2 = new JButton("");
+		jbtn_salir2.setToolTipText("Cierra y verifica si desea guardar el archivo.");
 		jtoolBar.add(jbtn_salir2);
 		jbtn_salir2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -279,6 +282,7 @@ public class Editor_texto extends JFrame implements ActionListener{
 		jbtn_salir2.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/salir.png")));
 		
 		jbtn_imprime = new JButton("");
+		jbtn_imprime.setToolTipText("Imprime el documento txt.");
 		jbtn_imprime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	imprimirDatos(evt);
@@ -288,14 +292,17 @@ public class Editor_texto extends JFrame implements ActionListener{
 		jbtn_imprime.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/printer24x24.png")));
 		
 		jbtn_negrita = new JButton("");
+		jbtn_negrita.setToolTipText("Pone la fuente en negrita.");
 		jtoolBar.add(jbtn_negrita);
 		jbtn_negrita.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/negrita.png")));
 		
 		jbtn_italic = new JButton("");
+		jbtn_italic.setToolTipText("Pone la fuente en italic.");
 		jtoolBar.add(jbtn_italic);
 		jbtn_italic.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/italic.png")));
 		
 		jbtn_bolditalic = new JButton("");
+		jbtn_bolditalic.setToolTipText("Una fusion de  negrita e italic");
 		jtoolBar.add(jbtn_bolditalic);
 		jbtn_bolditalic.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/sub.png")));
 		
@@ -634,6 +641,7 @@ public class Editor_texto extends JFrame implements ActionListener{
 		scrollPane_1.setViewportView(jta_muestrafiltro);
 		
 		jbtn_limpia = new JButton("");
+		jbtn_limpia.setToolTipText("Estandariza la fuente del texto.");
 		jbtn_limpia.setIcon(new ImageIcon(Editor_texto.class.getResource("/Recursos/undo.png")));
 		jbtn_limpia.setActionCommand("jbtn_limpia");
 		jbtn_limpia.setBounds(0, 82, 24, 24);
